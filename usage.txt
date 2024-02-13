@@ -1,0 +1,8 @@
+venv-
+python3 -m venv bot-env
+source bot-env/bin/activate
+bot-env\Scripts\activate
+
+requirements-
+pip freeze > requirements.txt
+pip install -r requirements.txt
