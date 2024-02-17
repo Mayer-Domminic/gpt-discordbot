@@ -1,18 +1,18 @@
-import discord
 import json
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import discord
 
-with open('config.json') as config_file:
-    config = json.load(config_file)
-
+# proprietaries
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
+
+with open('config.json') as config_file:
+    config = json.load(config_file)
+
+def db():
     dbclient = MongoClient(config.get('uri'), server_api=ServerApi('1'))
     try:
         dbclient.admin.command('ping')
@@ -21,14 +21,18 @@ async def on_ready():
         print(e)
     db = dbclient['bigdata']
     discord_collection = db['discord']
-    
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+gid = 942894317087887360
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
 
-client.run(config.get('token'))
+bot = discord.Bot()
+
+@bot.event
+async def on_ready():
+    print(f"We have logged in as {bot.user}")
+
+@bot.slash_command(guild_ids=[gid])
+async def hello(ctx):
+    await ctx.respond("Hello!")
+
+bot.run(config.get('token'))
